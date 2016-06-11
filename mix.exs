@@ -1,4 +1,4 @@
-defmodule Hello.Mixfile do
+defmodule StripeEventex.Mixfile do
   use Mix.Project
 
   def project do
