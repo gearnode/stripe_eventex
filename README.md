@@ -1,14 +1,11 @@
 # StripeEventex
 [![Build Status](https://travis-ci.com/Birdly/birdly-api-2.svg?token=JhpP82VZrtp2xXfLPy5P&branch=master)](https://travis-ci.com/Birdly/birdly-api-2)
 
-
-**TODO: Add description**
-
 ## Installation
 
 If [available in Hex](https://hex.pm/docs/publish), the package can be installed as:
 
-Add hello to your list of dependencies in `mix.exs`:
+Add stripe_eventex to your list of dependencies in `mix.exs`:
 
     def deps do
       [{:stripe_eventex, "~> 1.0.0}]
@@ -22,7 +19,7 @@ Then run mix do deps.get, deps.compile inside your project's directory.
       import Plug.Conn
       use Plug.Router
 
-      plug StripeEventex, path: "/", validation: &StripeEventApplication.valid!/1
+      plug StripeEventex, path: "/stripe_hooks", validation: &StripeEventApplication.valid!/1
       plug :match
       plug :dispatch
 
