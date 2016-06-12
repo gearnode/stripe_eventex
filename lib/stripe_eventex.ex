@@ -20,7 +20,6 @@ defmodule StripeEventex do
   	body = conn |> parse_body
 
   	# dont't forget verify event
-
 		case retrieve_event(events, body) do
 			{_, module} -> subscribed_event(conn, module, body)
 			nil -> unknown_event(conn)
@@ -43,20 +42,21 @@ defmodule StripeEventex do
 
   defp subscribed_event(conn, module, body) do
 		Kernel.apply(module, :perform, [body])
-  	send_response(conn, "success")
+  	send_response(conn, 200, "success")
 	rescue
 		UndefinedFunctionError ->
-			send_response(conn, "fail (MissingStripeEventModule was raised check your logs)")
+			send_response(conn, 500, "fail (MissingStripeEventModule was raised check your logs)")
 			raise MissingStripeEventModule, message: "Missing #{module} for performing this Stripe event"
+    # plus de gestion d'erreur
   end
 
   defp unknown_event(conn) do
-  	send_response(conn, "success (not subscribed)")
+  	send_response(conn, 200, "success (not subscribed)")
   end
 
-  defp send_response(conn, message) do
+  defp send_response(conn, code, message) do
   	conn
   	|> put_resp_content_type("application/json")
-  	|> send_resp(200, Poison.encode!(%{message: message}))
+  	|> send_resp(code, Poison.encode!(%{message: message}))
   end
 end
