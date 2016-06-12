@@ -1,4 +1,6 @@
 # StripeEventex
+[![Build Status](https://travis-ci.com/Birdly/birdly-api-2.svg?token=JhpP82VZrtp2xXfLPy5P&branch=master)](https://travis-ci.com/Birdly/birdly-api-2)
+
 
 **TODO: Add description**
 
