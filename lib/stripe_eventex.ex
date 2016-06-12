@@ -1,10 +1,3 @@
-# {:ok, _} = Plug.Adapters.Cowboy.http StripeEventex, []
-defmodule Stripe.CustomerCreated do
-	def perform(_opts) do
-		IO.puts "Hello World"
-	end
-end
-
 defmodule StripeEventex do
 	@moduledoc """
   A plug for response to stripe event
