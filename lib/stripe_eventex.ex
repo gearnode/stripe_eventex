@@ -22,11 +22,8 @@ defmodule StripeEventex do
 		defexception message: "Missing module for performing this Stripe event"
 	end
 
-  def init(_opts) do
-  	Application.get_env(:stripe_eventex, :subscibed_events)
-  end
-
-  def call(conn, events) do
+  def init(options), do: options
+  def call(conn, options) do
   	body = conn |> parse_body
 
   	# dont't forget verify event
@@ -36,6 +33,10 @@ defmodule StripeEventex do
 			nil -> unknown_event(conn)
 			_ -> raise ArgumentError
 		end
+  end
+
+  defp events do
+    Application.get_env(:stripe_eventex, :subscibed_events)
   end
 
   defp parse_body(conn) do
