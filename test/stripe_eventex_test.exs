@@ -19,6 +19,9 @@ defmodule StripeEventexTest do
 	end
 
 	test "when subcribed event " do
-
+		conn = StripeEventex.call(conn(:post, "/", Poison.encode!(%{event: "customer.created"})), @opts)
+		assert conn.status == 200
+		assert get_resp_header(conn, "content-type") == ["application/json; charset=utf-8"]
+		assert conn.resp_body == Poison.encode!(%{message: "success"})
 	end
 end
