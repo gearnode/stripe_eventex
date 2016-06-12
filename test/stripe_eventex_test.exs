@@ -1,3 +1,11 @@
+# {:ok, _} = Plug.Adapters.Cowboy.http StripeEventex, [log: true, verify_event: true, path: "/"]
+defmodule Stripe.CustomerCreated do
+	def perform(_opts) do
+	end
+end
+
+# plug StripeEventex, log: true, verify_event: true, path: "/"
+
 defmodule StripeEventexTest do
 	use ExUnit.Case, async: true
 	use Plug.Test
