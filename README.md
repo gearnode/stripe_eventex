@@ -34,6 +34,20 @@ Then run mix do deps.get, deps.compile inside your project's directory.
 
       def valid!(conn), do: true
     end
+    
+In your `config.exs` file, you must subscribe to event like this
+    
+    config :stripe_eventex, subscibed_events: [{"customer.created", Stripe.CustomerCreated},
+                                               {"customer.updated", Stripe.CustomerUpdated} ]
+
+Your module must implement perform/1 function, the arguments is stripe event paylaod.
+e.g.
+
+    defmodule Stripe.CustomerCreated do
+        def perform(event)
+            IO.inspect event
+        end
+    end
 
 ### The validation callback
 
