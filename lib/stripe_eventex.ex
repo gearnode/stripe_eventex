@@ -3,6 +3,16 @@ defmodule StripeEventex do
   A plug for response to stripe event
   To use it, just plug it into the desired module.
   plug Plug.StripeEventex
+
+  ## Example
+      defmodule StripeEvent do
+        import Plug.Conn
+        use Plug.Router
+        plug StripeEventex, path: "/", validation: &StripeEvent.is_authorized/1
+        plug :match
+        plug :dispatch
+        def is_authorized(conn), do: true
+      end
   """
 
   import Plug.Conn
@@ -17,19 +27,26 @@ defmodule StripeEventex do
 
   def init(options) do
     unless options[:path], do: raise ArgumentError, message: "missing require argument 'path'"
+    unless options[:validation], do: raise ArgumentError, message: "missing require argument 'path'"
     options
   end
 
   def call(%Plug.Conn{request_path: path, method: method} = conn, options) when method == "POST" do
     if path == options[:path] do
-      body = conn |> parse_body
-
-      # dont't forget verify event
-      case retrieve_event(events, body) do
-        {_, module} -> subscribed_event(conn, module, body)
-        nil -> unknown_event(conn)
-        _ -> raise ArgumentError
+      if options[:validation].(conn) do
+        conn |> proccess_event
+      else
+        conn |> send_response(403, "unauthorized")
       end
+    end
+  end
+
+  defp proccess_event(conn) do
+    body = conn |> parse_body
+    case retrieve_event(events, body) do
+      {_, module} -> subscribed_event(conn, module, body)
+      nil -> unknown_event(conn)
+      _ -> raise ArgumentError
     end
   end
 
@@ -53,7 +70,6 @@ defmodule StripeEventex do
     UndefinedFunctionError ->
       send_response(conn, 500, "fail (MissingStripeEventModule was raised check your logs)")
       raise MissingStripeEventModule, message: "Missing #{module} for performing this Stripe event"
-      # plus de gestion d'erreur
   end
 
   defp unknown_event(conn) do
