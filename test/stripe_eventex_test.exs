@@ -22,7 +22,7 @@ defmodule StripeEventexTest do
 
   test "when path arguments is not present" do
     assert_raise ArgumentError, fn ->
-      conn = StripeEventex.call(conn(:post, "/", Poison.encode!(%{event: "unknown"})), StripeEventex.init([]))
+      StripeEventex.call(conn(:post, "/", Poison.encode!(%{event: "unknown"})), StripeEventex.init([]))
     end
   end
 
