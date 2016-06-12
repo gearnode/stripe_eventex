@@ -10,7 +10,16 @@ defmodule StripeEventexTest do
   use ExUnit.Case, async: true
   use Plug.Test
 
-  @opts StripeEventex.init([path: "/"])
+  @opts StripeEventex.init([path: "/", verify_event: false])
+
+  test "when method request is not POST" do
+
+    Enum.each([:get, :head, :patch, :delete, :option], fn method ->
+      assert_raise FunctionClauseError, fn ->
+        StripeEventex.call(conn(method, "/", ""), @opts)
+      end
+    end)
+  end
 
   test "when path arguments is not present" do
     assert_raise ArgumentError, fn ->

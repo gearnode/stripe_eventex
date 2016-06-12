@@ -20,7 +20,7 @@ defmodule StripeEventex do
     options
   end
 
-  def call(%Plug.Conn{request_path: path} = conn, options) do
+  def call(%Plug.Conn{request_path: path, method: method} = conn, options) when method == "POST" do
     if path == options[:path] do
       body = conn |> parse_body
 
