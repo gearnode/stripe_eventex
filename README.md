@@ -54,4 +54,4 @@ e.g.
 The validation callback will be called to decide if the stripe event is authorized or not.
 
 - It has to be defined in the format &Mod.fun/1.
-- It receives %Plug.Conn.__struct__, and must return true or false
+- It receives `%Plug.Conn.__struct__`, and must return true or false
