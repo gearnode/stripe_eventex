@@ -43,7 +43,7 @@ defmodule StripeEventexTest do
   test "when subscribed event fail" do
     conn = conn(:post, "/", Poison.encode!(%{event: "customer.updated"}))
     assert_raise StripeEventex.MissingStripeEventModule, fn ->
-      conn = StripeEventex.call(conn, @opts)
+      StripeEventex.call(conn, @opts)
     end
   end
 
