@@ -16,12 +16,12 @@ defmodule StripeEventex do
   end
 
   def init(options) do
-    if List.keyfind(options, :path, 0), do: options, else: raise ArgumentError, message: "path is a require argument"
+    unless options[:path], do: raise ArgumentError, message: "missing require argument 'path'"
+    options
   end
 
-  def call(conn, options) do
-    {_, path} = List.keyfind(options, :path, 0)
-    if conn.request_path == path do
+  def call(%Plug.Conn{request_path: path} = conn, options) do
+    if path == options[:path] do
       body = conn |> parse_body
 
       # dont't forget verify event
