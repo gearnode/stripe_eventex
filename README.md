@@ -9,9 +9,11 @@
 If [available in Hex](https://hex.pm/docs/publish), the package can be installed as:
 
 Add hello to your list of dependencies in `mix.exs`:
+
     def deps do
       [{:stripe_eventex, "~> 1.0.0}]
     end
+    
 Then run mix do deps.get, deps.compile inside your project's directory.
 
 ## Usage
