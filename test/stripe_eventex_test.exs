@@ -1,4 +1,3 @@
-defmodule HelloTest do
 defmodule StripeEventexTest do
 	use ExUnit.Case, async: true
 	use Plug.Test
@@ -19,13 +18,7 @@ defmodule StripeEventexTest do
 		end
 	end
 
-	test "" do
+	test "when subcribed event " do
 
-	end
-
-
-
-	test "the truth" do
-		assert 1 + 1 == 2
 	end
 end
