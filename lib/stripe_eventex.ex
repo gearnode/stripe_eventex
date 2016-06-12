@@ -33,7 +33,7 @@ defmodule StripeEventex do
 
 		case retrieve_event(events, body) do
 			{_, module} -> subscribed_event(conn, module, body)
-			nil -> no_subscribed_event(conn)
+			nil -> unknown_event(conn)
 			_ -> raise ArgumentError
 		end
   end
@@ -56,7 +56,7 @@ defmodule StripeEventex do
 			raise MissingStripeEventModule, message: "Missing #{module} for performing this Stripe event"
   end
 
-  defp no_subscribed_event(conn) do
+  defp unknown_event(conn) do
   	send_response(conn, "success (not subscribed)")
   end
 
