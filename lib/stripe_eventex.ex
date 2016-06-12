@@ -15,20 +15,26 @@ defmodule StripeEventex do
 		defexception message: "Missing module for performing this Stripe event"
 	end
 
-  def init(options), do: options
-  def call(conn, options) do
-  	body = conn |> parse_body
+  def init(options) do
+    if List.keyfind(options, :path, 0), do: options, else: raise ArgumentError, message: "path is a require argument"
+  end
 
-  	# dont't forget verify event
-		case retrieve_event(events, body) do
-			{_, module} -> subscribed_event(conn, module, body)
-			nil -> unknown_event(conn)
-			_ -> raise ArgumentError
-		end
+  def call(conn, options) do
+    {_, path} = List.keyfind(options, :path, 0)
+    if conn.request_path == path do
+      body = conn |> parse_body
+
+      # dont't forget verify event
+      case retrieve_event(events, body) do
+        {_, module} -> subscribed_event(conn, module, body)
+        nil -> unknown_event(conn)
+        _ -> raise ArgumentError
+      end
+    end
   end
 
   defp events do
-    Application.get_env(:stripe_eventex, :subscibed_events)
+    Application.get_env(:stripe_eventex, :subscibed_events) || []
   end
 
   defp parse_body(conn) do
