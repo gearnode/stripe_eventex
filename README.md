@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.com/Birdly/birdly-api-2.svg?token=JhpP82VZrtp2xXfLPy5P&branch=master)](https://travis-ci.com/Birdly/birdly-api-2)
+[![Build Status](https://travis-ci.org/gearnode/stripe_eventex.svg?branch=master)](https://travis-ci.org/gearnode/stripe_eventex)
 # StripeEventex
 
 ## Installation
