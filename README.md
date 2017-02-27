@@ -6,7 +6,7 @@
 Add stripe_eventex to your list of dependencies in `mix.exs`:
 
     def deps do
-      [{:stripe_eventex, "~> 1.0.0}]
+      [{:stripe_eventex, "~> 1.0.0"}]
     end
     
 Then run mix do deps.get, deps.compile inside your project's directory.
