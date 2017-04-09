@@ -9,13 +9,13 @@ defmodule StripeEventexTest do
   use Plug.Test
 
   defmodule TrueStripeValidation do
-    def valid!(conn) do
+    def valid!(_conn) do
       true
     end
   end
 
   defmodule FalseStripeValidation do
-    def valid!(conn) do
+    def valid!(_conn) do
       false
     end
   end
