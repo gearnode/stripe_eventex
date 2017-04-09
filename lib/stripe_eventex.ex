@@ -31,13 +31,11 @@ defmodule StripeEventex do
     options
   end
 
-  def call(%Plug.Conn{request_path: path, method: method} = conn, options) when method == "POST" do
-    if path == options[:path] do
-      if options[:validation].(conn) do
-        conn |> proccess_event
-      else
-        conn |> send_response(403, "unauthorized")
-      end
+  def call(%Plug.Conn{request_path: path, method: "POST"} = conn, options) do
+    with true <- path == options[:path], true <- options[:validation].(conn) do
+      conn |> proccess_event
+    else
+      _ -> conn |> send_response(403, "unauthorized")
     end
   end
 
