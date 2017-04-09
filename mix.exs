@@ -5,9 +5,9 @@ defmodule StripeEventex.Mixfile do
     [app: :stripe_eventex,
      version: "2.0.0",
      elixir: "~> 1.4",
-     description: description,
-     package: package,
-     deps: deps]
+     description: description(),
+     package: package(),
+     deps: deps()]
   end
 
   def application do

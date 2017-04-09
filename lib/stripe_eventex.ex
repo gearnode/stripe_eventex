@@ -41,7 +41,7 @@ defmodule StripeEventex do
 
   defp proccess_event(conn) do
     body = conn |> parse_body
-    case retrieve_event(events, body) do
+    case retrieve_event(events(), body) do
       {_, module} -> subscribed_event(conn, module, body)
       nil -> unknown_event(conn)
       _ -> raise ArgumentError
