@@ -15,9 +15,9 @@ defmodule StripeEventex.Mixfile do
   end
 
   defp deps do
-    [{:cowboy, "~> 1.0.0"},
-     {:plug, "~> 1.0"},
-     {:poison, "~> 2.0"}]
+    [{:cowboy, "~> 1.1", only: [:test], optional: true},
+     {:plug, "~> 1.3", only: [:test], optional: true},
+     {:poison, "~> 3.0"}]
   end
 
   defp description do
