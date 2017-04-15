@@ -27,7 +27,7 @@ defmodule StripeEventex do
 
   def init(options) do
     unless options[:path], do: raise ArgumentError, message: "missing require argument 'path'"
-    unless options[:validation], do: raise ArgumentError, message: "missing require argument 'path'"
+    unless options[:validation], do: raise ArgumentError, message: "missing require argument 'validation'"
     options
   end
 
