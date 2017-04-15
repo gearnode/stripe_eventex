@@ -41,7 +41,7 @@ defmodule StripeEventex do
 
   defp proccess_event(conn) do
     body = conn |> parse_body
-    case retrieve_event(events(), body) do
+    case retrieve_event(body) do
       {_, module} -> subscribed_event(conn, module, body)
       nil -> unknown_event(conn)
       _ -> raise ArgumentError
@@ -57,8 +57,8 @@ defmodule StripeEventex do
     Poison.decode!(raw_body)
   end
 
-  defp retrieve_event(events, body) do
-    List.keyfind(events, body["event"], 0)
+  defp retrieve_event(body) do
+    events() |> List.keyfind(body["event"], 0)
   end
 
   defp subscribed_event(conn, module, body) do
@@ -71,7 +71,7 @@ defmodule StripeEventex do
   end
 
   defp unknown_event(conn) do
-    send_response(conn, 200, "success (not subscribed)")
+    conn |> send_response(200, "success (not subscribed)")
   end
 
   defp send_response(conn, code, message) do
