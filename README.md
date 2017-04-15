@@ -3,13 +3,15 @@
 
 ## Installation
 
-Add stripe_eventex to your list of dependencies in `mix.exs`:
+Add `stripe_eventex to your list of dependencies in `mix.exs`:
 
-    def deps do
-      [{:stripe_eventex, "~> 1.0.0"}]
-    end
-    
-Then run mix do deps.get, deps.compile inside your project's directory.
+```elixir
+  def deps do
+    [{:stripe_eventex, "~> 2.0.0"}]
+  end
+```
+
+Then run `mix deps.get, deps.compile`, inside your project's directory.
 
 ## Usage
 
@@ -29,9 +31,9 @@ Then run mix do deps.get, deps.compile inside your project's directory.
 
       def valid!(conn), do: true
     end
-    
+
 In your `config.exs` file, you must subscribe to event like this
-    
+
     config :stripe_eventex, subscibed_events: [{"customer.created", Stripe.CustomerCreated},
                                                {"customer.updated", Stripe.CustomerUpdated} ]
 
