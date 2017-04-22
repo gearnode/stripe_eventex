@@ -11,7 +11,7 @@ def deps do
 end
 ```
 
-Then run `mix deps.get, deps.compile`, inside your project's directory.
+Then run `mix do deps.get, deps.compile`, inside your project's directory.
 
 ## Usage
 ```elixir
