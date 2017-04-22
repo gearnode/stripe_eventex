@@ -1,3 +1,5 @@
+:warning: master branch is currently on active development, [last stable version](https://github.com/gearnode/stripe_eventex/tree/1.0.0)
+
 [![Build Status](https://travis-ci.org/gearnode/stripe_eventex.svg?branch=master)](https://travis-ci.org/gearnode/stripe_eventex)
 # StripeEventex
 
