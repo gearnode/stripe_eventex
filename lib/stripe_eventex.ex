@@ -1,6 +1,7 @@
 defmodule StripeEventex do
   @moduledoc """
-  A plug for response to stripe event
+  A plug middleware to handle stripe webhook without any problems.
+
   To use it, just plug it into the desired module.
   plug Plug.StripeEventex
 
@@ -17,14 +18,6 @@ defmodule StripeEventex do
 
   import Plug.Conn
 
-  defmodule MissingStripeEventModule do
-    @moduledoc """
-    Error raised when apply peform module fail
-    """
-
-    defexception message: "Missing module for performing this Stripe event"
-  end
-
   def init(options) do
     unless options[:path], do: raise ArgumentError, message: "missing require argument 'path'"
     unless options[:validation], do: raise ArgumentError, message: "missing require argument 'validation'"
@@ -32,51 +25,49 @@ defmodule StripeEventex do
   end
 
   def call(%Plug.Conn{request_path: path, method: "POST"} = conn, options) do
-    with true <- path == options[:path], true <- options[:validation].(conn) do
-      conn |> proccess_event
-    else
-      _ -> conn |> send_response(403, "unauthorized")
-    end
+    with true <- path == options[:path],
+         true <- options[:validation].(conn), do: do_call(conn)
   end
 
-  defp proccess_event(conn) do
-    body = conn |> parse_body
-    case retrieve_event(body) do
-      {_, module} -> subscribed_event(conn, module, body)
-      nil -> unknown_event(conn)
-      _ -> raise ArgumentError
-    end
-  end
 
-  defp events do
-    Application.get_env(:stripe_eventex, :subscibed_events) || []
-  end
-
-  defp parse_body(conn) do
-    {:ok, raw_body, _} = read_body(conn, length: 1_000_000)
-    Poison.decode!(raw_body)
-  end
-
-  defp retrieve_event(body) do
-    events() |> List.keyfind(body["event"], 0)
-  end
-
-  defp subscribed_event(conn, module, body) do
-    Kernel.apply(module, :perform, [body])
-    send_response(conn, 200, "success")
-  rescue
-    UndefinedFunctionError ->
-      send_response(conn, 500, "fail (MissingStripeEventModule was raised check your logs)")
-      raise MissingStripeEventModule, message: "Missing #{module} for performing this Stripe event"
-  end
-
-  defp unknown_event(conn) do
-    conn |> send_response(200, "success (not subscribed)")
-  end
-
-  defp send_response(conn, code, message) do
+  defp do_call(conn) do
     conn
-    |> put_resp_content_type("application/json")
-    |> send_resp(code, Poison.encode!(%{message: message}))
+    |> get_req_body
+    |> perform
+    |> send_response(201, "success")
+  end
+
+  defp perform(body) do
+    to_tuple(body["event"])
+    |> retrieve_subscribed_treatments()
+    |> apply_treatments(body)
+  end
+
+  defp get_req_body(conn) do
+    {:ok, raw_body, _} = read_body(conn)
+    raw_body |> Poison.decode!
+  end
+
+  defp subscibed_events, do: Application.get_env(:stripe_eventex, :subscibed_events, [])
+
+  defp to_tuple(string), do: string |> String.split(".") |> List.to_tuple()
+
+  defp retrieve_subscribed_treatments({receive_resource, receive_action}) do
+    Enum.filter(subscibed_events(), fn {event, _} ->
+      case to_tuple(event) do
+        {"*", "*"} -> true
+        {"*", ^receive_action} -> true
+        {^receive_resource, "*"} -> true
+        {^receive_resource, ^receive_action} -> true
+        _ -> false
+      end
+    end)
+  end
+
+  defp apply_treatments([], body), do: :ok
+  defp apply_treatments([{_, fun} | t], body) do
+    %{pid: pid} = Task.async(fn -> fun.(body)  end)
+    Process.monitor(pid)
+    apply_treatments(t, body)
   end
 end
